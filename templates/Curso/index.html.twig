@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ parent() }} Cursos {% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Cursos</h1>
+        <a class="btn btn-outline-primary" style="text-decoration: none; height: 40px" href="{{ path('curso_create')}}"> <i class="fa-solid fa-circle-plus"></i>
+            Novo Curso</a>
+    </div>
+
+    <div class="p-3 rounded" style="background-color: #e3e1e1">
+        <div class="py-1 text-muted h6"><i class="fa-solid fa-filter"></i> Filtrar por:</div>
+        <form class="w-100">
+            {{ form_widget(form._token) }}
+            <div class="row mb-3">
+                    <div class="col-sm-6">
+                        {{ form_widget(form.name) }}
+                    </div>
+                    <div class="col-sm-3">
+                        {{ form_widget(form.modality) }}
+                    </div>
+                    <div class="col-sm-3">
+                        {{ form_widget(form.code) }}
+                    </div>
+                    <div class="col-sm-3 mt-2">
+                        {{ form_widget(form.workload) }}
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">Buscar </button>
+                    <button type="reset" class="btn btn-secondary ms-2">Limpar</button>
+                </div>
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Curso</th>
+                <th>Carga Horária</th>
+                <th>Modalidade</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for curso in cursos %}
+            <tr>
+                <td>{{ curso.id }}</td>
+                <td>{{ curso.courseName }}</td>
+                <td>{{ curso.workload }}</td>
+                <td>{{ curso.getModalityName() }}</td>
+                <td>
+                    <a href="{{ path("cursos_edit", {curso: curso.id}) }}"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="{{ path('curso_delete', {curso: curso.id})}}"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+{% endblock %}

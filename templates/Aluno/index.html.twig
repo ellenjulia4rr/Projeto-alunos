@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ parent() }} Alunos {% endblock %}
+
+{% block body %}
+    <h1>Alunos</h1>
+    <div class="d-flex justify-content-end m-3">
+        <a class="btn btn-outline-primary" style="text-decoration: none" href="{{ path('alunos_create')}}"> <i class="fa-solid fa-circle-plus"></i>
+            Novo Aluno</a>
+    </div>
+
+    <table class="table table-striped">
+       <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Data de Nascimento</th>
+                <th>Gênero</th>
+                <th>Telefone</th>
+                <th>E-mail</th>
+                <th>Data de Criação</th>
+                <th>Opções</th>
+            </tr>
+       </thead>
+        <tbody>
+        {% for aluno in alunos %}
+            <tr>
+                <td>{{ aluno.id }}</td>
+                <td>{{ aluno.name }}</td>
+                <td>{{ aluno.birthDate | date('d/m/Y') }}</td>
+                <td>{{ aluno.getGenderName() }}</td>
+                <td>{{ aluno.phone }}</td>
+                <td>{{ aluno.email }}</td>
+                <td>{{ aluno.registrationDate | date('d/m/Y')}}</td>
+                <td>
+                    <a href="{{ path("alunos_edit", {id: aluno.id}) }}"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="{{ path('alunos_delete', {aluno: aluno.id})}}"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
