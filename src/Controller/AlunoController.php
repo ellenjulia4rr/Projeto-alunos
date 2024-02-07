@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Aluno;
+use App\Filters\AlunoFilter;
 use App\Forms\AlunoType;
+use App\Forms\Filters\AlunoFilterType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,10 +19,17 @@ class AlunoController extends AbstractController
 {
     #[Template('Aluno/index.html.twig')]
     #[Route('/', name: 'alunos_index')]
-    public function indexAction(EntityManagerInterface $em): array
+    public function indexAction(EntityManagerInterface $em, Request $request): array
     {
-        $alunos = $em->getRepository(Aluno::class)->findAll();
-        return ['alunos' => $alunos];
+        $filter = new AlunoFilter();
+        $form = $this->createForm(AlunoFilterType::class, $filter);
+        $form->handleRequest($request);
+
+        $alunos = $em->getRepository(Aluno::class)->getAlunosByFilter($filter);
+        return [
+            'alunos' => $alunos,
+            'form' => $form->createView()
+        ];
     }
 
     #[Template('Aluno/new.html.twig')]

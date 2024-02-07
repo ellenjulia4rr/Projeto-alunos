@@ -7,8 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\PersistentCollection;
+use App\Repository\AlunoRepository;
 
-#[ORM\Entity()]
+#[ORM\Entity(AlunoRepository::class)]
 #[ORM\Table(name: 'alunos')]
 class Aluno
 {

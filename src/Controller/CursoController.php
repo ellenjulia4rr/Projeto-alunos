@@ -24,7 +24,7 @@ class CursoController extends AbstractController
         $filter = new CursoFilter();
         $form = $this->createForm(CursoFilterType::class, $filter);
         $form->handleRequest($request);
-
+//        die(dump(json_encode($request->request->all())));
         $cursos = $em->getRepository(Curso::class)->getCursosByFilter($filter);
         return [
             'cursos' => $cursos,
