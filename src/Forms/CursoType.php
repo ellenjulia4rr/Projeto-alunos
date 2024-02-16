@@ -2,6 +2,8 @@
 
 namespace App\Forms;
 
+use App\Entity\Aluno;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -29,6 +31,13 @@ class CursoType extends AbstractType
                'attr' => ['class' => 'form-control'],
                'label' => 'Modalidade',
                'placeholder' => 'Selecione uma Modalidade'
+           ])
+           ->add('alunos', EntityType::class, [
+               'class' => Aluno::class,
+               'choice_label' => 'name',
+               'multiple' => true,
+               'required' => false,
+               'attr' => ['class' => 'form-control']
            ])
        ;
     }

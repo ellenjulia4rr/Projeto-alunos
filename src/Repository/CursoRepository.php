@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Curso;
 use App\Filters\CursoFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,34 +21,55 @@ class CursoRepository extends ServiceEntityRepository
         parent::__construct($registry, Curso::class);
     }
 
-    public function getCursosByFilter(CursoFilter $filter) : array
+    public function getCursosByFilter(CursoFilter $filter): array
+    {
+        $qb = $this->getQueryBuilderByFilter($filter);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getCountCursosByFilter(CursoFilter $filter) :array
+    {
+        $qb = $this->getQueryBuilderByFilter($filter);
+        $qb
+            ->select('count(distinct cursos.id) as qtde')
+        ;
+        return $qb->getQuery()->getResult();
+    }
+
+    private function getQueryBuilderByFilter(CursoFilter $filter): QueryBuilder
     {
         $qb = $this->createQueryBuilder('cursos');
 
-        if($filter->getName())
+        if ($filter->getName())
             $qb
-                ->andWhere('cursos.courseName LIKE :cN' )
-                ->setParameter('cN', "%{$filter->getName()}%")
-            ;
+                ->andWhere($qb->expr()->orX(
+                    'cursos.courseName LIKE :cN',
+                    'cursos.id LIKE :cN'
+                ))
+                ->setParameter('cN', "%{$filter->getName()}%");
 
-        if($filter->getModality())
+        if ($filter->getModality())
             $qb
                 ->andWhere('cursos.modality LIKE :cM')
-                ->setParameter('cM', "%{$filter->getModality()}%")
-            ;
+                ->setParameter('cM', "%{$filter->getModality()}%");
 
-        if($filter->getCode())
+        if ($filter->getCode())
             $qb
                 ->andWhere('cursos.id = :cC')
-                ->setParameter('cC', $filter->getCode())
-            ;
+                ->setParameter('cC', $filter->getCode());
 
-        if($filter->getWorkload())
+        if ($filter->getWorkload())
             $qb
                 ->andWhere('cursos.workload = :cW')
-                ->setParameter('cW', $filter->getWorkload())
-            ;
+                ->setParameter('cW', $filter->getWorkload());
 
-        return $qb->getQuery()->getResult();
+        if ($filter->getAlunos() and count($filter->getAlunos()))
+            $qb
+                ->join('cursos.alunos', 'alunos')
+                ->andWhere('alunos.id IN (:aI)')
+                ->setParameter('aI', $filter->getAlunos()->toArray());
+
+        return $qb;
     }
 }

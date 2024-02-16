@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Aluno;
 use App\Filters\AlunoFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class AlunoRepository extends ServiceEntityRepository
@@ -14,13 +16,31 @@ class AlunoRepository extends ServiceEntityRepository
         parent::__construct($registry, Aluno::class);
     }
 
-    public function getAlunosByFilter(AlunoFilter $filter) :array
+    public function getAlunosByFilter(AlunoFilter $filter) :Query
+    {
+        $qb = $this->getQueryBuilderByFilter($filter);
+
+        return $qb->getQuery();
+    }
+
+    public function getCountAlunosByFilter(AlunoFilter $filter) :array
+    {
+        $qb = $this->getQueryBuilderByFilter($filter);
+        $qb
+            ->select("count(distinct alunos.id) as qtde")
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    private function getQueryBuilderByFilter(AlunoFilter $filter): QueryBuilder
     {
         $qb = $this->createQueryBuilder('alunos');
 
         if($filter->getName())
             $qb
-                ->andWhere('alunos.name LIKE :aN')
+                ->andWhere(
+                    'alunos.name LIKE :aN')
                 ->setParameter('aN', "%{$filter->getName()}%")
             ;
 
@@ -56,10 +76,15 @@ class AlunoRepository extends ServiceEntityRepository
 
         if($filter->getCreationDate())
             $qb
-                ->andWhere('alunos.registrationDate = :aR')
-                ->setParameter('aR', $filter->getCreationDate() )
+                ->andWhere('alunos.registrationDate LIKE :aR')
+                ->setParameter('aR', $filter->getCreationDate()->format('Y-m-d').'%')
             ;
-
-        return $qb->getQuery()->getResult();
+        if($filter->getCursos() and count($filter->getCursos()))
+            $qb
+                ->join('alunos.cursos', 'cursos')
+                ->andWhere('cursos.id IN (:aC)')
+                ->setParameter('aC', $filter->getCursos()->toArray())
+            ;
+        return $qb;
     }
 }

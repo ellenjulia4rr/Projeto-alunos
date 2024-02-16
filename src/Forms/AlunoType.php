@@ -19,10 +19,14 @@ class AlunoType extends AbstractType
             ->add('name', TextType::class, [
                 'attr' => ['class' => 'form-control', 'placeholder' => 'Digite o nome do aluno'],
                 'label' => 'Nome Completo',
+                'required' => true
             ])
             ->add('birthDate', DateType::class, [
-                'attr' => ['class' => 'form-control'],
-                'label' => 'Data de Nascimento'
+                'widget' => 'single_text',
+                'html5' => false,
+                'label' => 'Data de Nascimento',
+                'attr' => ['class' => 'form-control-sm form-control dates js-datepicker', 'placeholder' => 'Data de Nascimento'],
+                'format' => 'dd/mm/yyyy'
             ])
             ->add('gender', ChoiceType::class, [
                 'choices' => [

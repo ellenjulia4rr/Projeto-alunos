@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin-container
+    environment:
+      PMA_HOST: 172.24.240.216   # Substitua pelo endereço IP ou nome do host do seu MySQL no WSL
+      PMA_PORT: 3306         # Substitua pela porta do seu MySQL
+      MYSQL_USER: ellen               # Substitua pelo usuário do seu MySQL
+      MYSQL_PASSWORD: 1212       # Substitua pela senha do seu MySQL usuário
+    ports:
+      - "8088:80"

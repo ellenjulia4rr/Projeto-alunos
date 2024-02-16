@@ -22,7 +22,7 @@ class Aluno
     private string $name;
 
     #[ORM\Column]
-    private \DateTime $birthDate;
+    private ?\DateTime $birthDate;
 
     #[ORM\Column(length:20)]
     private string $gender;
@@ -62,12 +62,12 @@ class Aluno
         return $this;
     }
 
-    public function getBirthDate(): \DateTime
+    public function getBirthDate(): ?\DateTime
     {
         return $this->birthDate;
     }
 
-    public function setBirthDate(\DateTime $birthDate): Aluno
+    public function setBirthDate(?\DateTime $birthDate): Aluno
     {
         $this->birthDate = $birthDate;
         return $this;

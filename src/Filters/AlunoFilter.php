@@ -2,6 +2,9 @@
 
 namespace App\Filters;
 
+use App\Entity\Curso;
+use Doctrine\Common\Collections\ArrayCollection;
+
 class AlunoFilter
 {
     private ?int $code = null;
@@ -11,6 +14,8 @@ class AlunoFilter
     private ?string $phone = null;
     private ?string $email = null;
     private ?\DateTime $creationDate = null;
+    private ?ArrayCollection $cursos = null;
+    private $conditions = [];
 
     public function getCode(): ?int
     {
@@ -86,6 +91,28 @@ class AlunoFilter
     public function setCreationDate(?\DateTime $creationDate): AlunoFilter
     {
         $this->creationDate = $creationDate;
+        return $this;
+    }
+
+    public function getCursos(): ?ArrayCollection
+    {
+        return $this->cursos;
+    }
+
+    public function setCursos(?ArrayCollection $cursos): AlunoFilter
+    {
+        $this->cursos = $cursos;
+        return $this;
+    }
+
+    public function getConditions(): array
+    {
+        return $this->conditions;
+    }
+
+    public function setConditions(array $conditions): AlunoFilter
+    {
+        $this->conditions = $conditions;
         return $this;
     }
 }

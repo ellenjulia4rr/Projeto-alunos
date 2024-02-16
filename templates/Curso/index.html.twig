@@ -3,63 +3,115 @@
 {% block title %} {{ parent() }} Cursos {% endblock %}
 
 {% block body %}
-    <div class="d-flex justify-content-between align-items-center">
-        <h1>Cursos</h1>
-        <a class="btn btn-outline-primary" style="text-decoration: none; height: 40px" href="{{ path('curso_create')}}"> <i class="fa-solid fa-circle-plus"></i>
-            Novo Curso</a>
+    <div class="background p-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h1 class="title fs-3"> <i class="fa-solid fa-laptop-file"></i>
+                    Cursos</h1>
+                <p class="count ms-3">{{ contagem }}</p>
+            </div>
+            <a class="btn btn-outline-primary btn-sm bnt-rounded mb-2" style="text-decoration: none " href="{{ path('curso_create')}}"> <i class="fa-solid fa-circle-plus"></i>
+                Novo Curso</a>
+        </div>
+
+        <div class="p-3 rounded" style="background-color: #f6f5f5">
+            <div class="py-1 text-muted h6"><i class="fa-solid fa-filter"></i> Filtrar por:</div>
+
+            <form class="w-100" method="post">
+                {{ form_widget(form._token) }}
+                <div class="row mb-3">
+                        <div class="col-sm-4">
+                            {{ form_label(form.name) }}
+                            {{ form_widget(form.name) }}
+                        </div>
+                        <div class="col-sm-2">
+                            {{ form_label(form.modality) }}
+                            {{ form_widget(form.modality) }}
+                        </div>
+                        <div class="col-sm-2">
+                            {{ form_label(form.workload) }}
+                            {{ form_widget(form.workload) }}
+                        </div>
+                        <div class="col-sm-4">
+                            {{ form_label(form.alunos) }} <br>
+                            {{ form_widget(form.alunos) }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit"  class="btn btn-primary bnt-rounded"> <i class="fa-solid fa-magnifying-glass">
+                            </i>Buscar </button>
+                        <button type="reset"class="btn btn-outline-secondary bnt-rounded ms-2"> <i class="fa-solid fa-eraser">
+                            </i>Limpar</button>
+                    </div>
+            </form>
+        </div>
+
+        <table class="table table-striped mt-5">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Curso</th>
+                    <th>Carga Horária</th>
+                    <th>Modalidade</th>
+                    <th>Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for curso in pagination %}
+                <tr>
+                    <td>{{ curso.id }}</td>
+                    <td>{{ curso.courseName }}</td>
+                    <td>{{ curso.workload }}</td>
+                    <td>{{ curso.getModalityName() }}</td>
+                    <td>
+                        <a href="{{ path("cursos_edit", {curso: curso.id}) }}"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a href="{{ path('curso_delete', {curso: curso.id})}}"><i class="fa-solid fa-trash delete-btn" curso="{{ curso.id }}"></i></a>
+                        <div id="{{ curso.id }}" class="modal" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirmação de Exclusão</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        Tem certeza que deseja deletar o curso?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="{{ path('cursos_index') }}" class="btn btn-outline-secondary bnt-rounded">
+                                            <i class="fa-solid fa-xmark"></i> Cancelar</a>
+                                        <a href="{{ path('curso_delete', {'curso': curso.id}) }}" class="btn btn-danger bnt-rounded">
+                                            <i class="fa-solid fa-trash"></i> Deletar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-end">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {{ knp_pagination_render(pagination) }}
+                </ul>
+            </nav>
+        </div>
     </div>
+{% endblock %}
 
-    <div class="p-3 rounded" style="background-color: #e3e1e1">
-        <div class="py-1 text-muted h6"><i class="fa-solid fa-filter"></i> Filtrar por:</div>
+{% block javascripts %}
+    {{ parent() }}
+    {{ component('Select2', { id: 'curso_filter_alunos'}) }}
 
-        <form class="w-100" method="post">
-            {{ form_widget(form._token) }}
-            <div class="row mb-3">
-                    <div class="col-sm-6">
-                        {{ form_widget(form.name) }}
-                    </div>
-                    <div class="col-sm-3">
-                        {{ form_widget(form.modality) }}
-                    </div>
-                    <div class="col-sm-3">
-                        {{ form_widget(form.code) }}
-                    </div>
-                    <div class="col-sm-3 mt-2">
-                        {{ form_widget(form.workload) }}
-                    </div>
-                </div>
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary">Buscar </button>
-                    <button type="reset" class="btn btn-secondary ms-2">Limpar</button>
-                </div>
-        </form>
-    </div>
-
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Curso</th>
-                <th>Carga Horária</th>
-                <th>Modalidade</th>
-                <th>Opções</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for curso in cursos %}
-            <tr>
-                <td>{{ curso.id }}</td>
-                <td>{{ curso.courseName }}</td>
-                <td>{{ curso.workload }}</td>
-                <td>{{ curso.getModalityName() }}</td>
-                <td>
-                    <a href="{{ path("cursos_edit", {curso: curso.id}) }}"><i class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="{{ path('curso_delete', {curso: curso.id})}}"><i class="fa-solid fa-trash"></i></a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-
-    </table>
-
+    <script>
+        $(document).ready(function () {
+            $('.delete-btn').on('click', e => {
+                e.preventDefault()
+                console.log(e.target)
+                const id = $(e.target).attr('curso')
+                const modal = document.getElementById(id)
+                $(modal).modal('show')
+            })
+        });
+    </script>
 {% endblock %}

@@ -2,6 +2,8 @@
 
 namespace App\Forms\Filters;
 
+use App\Entity\Aluno;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -15,7 +17,8 @@ class CursoFilterType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'required' => false,
-                'attr' => ['class' => 'form-control-sm form-control', 'placeholder' => 'Nome']
+                'attr' => ['class' => 'form-control-sm form-control', 'placeholder' => 'Código ou nome'],
+                'label' => 'Nome'
             ])
             ->add('modality', ChoiceType::class, [
                 'required'=> false,
@@ -24,15 +27,26 @@ class CursoFilterType extends AbstractType
                     'Online' => 'ONLINE'
                 ],
                 'attr' => ['class' => 'form-control-sm form-control'],
-                'placeholder' => 'Modalidade'
+                'placeholder' => 'Modalidade',
+                'label' => 'Modalidade'
             ])
             ->add('code', IntegerType::class, [
                 'required' => false,
-                'attr' => ['class' => 'form-control-sm form-control', 'placeholder' => 'Código']
+                'attr' => ['class' => 'form-control-sm form-control', 'placeholder' => 'Código'],
+                'label' => 'Código'
             ])
             ->add('workload', IntegerType::class, [
                 'required' => false,
-                'attr' => ['class' => 'form-control-sm form-control', 'placeholder' => 'Carga Horária']
+                'attr' => ['class' => 'form-control-sm form-control', 'placeholder' => 'Carga Horária'],
+                'label' => 'Carga Horária'
+            ])
+            ->add('alunos', EntityType::class, [
+                'class' => Aluno::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+                'label' => 'Alunos'
             ])
         ;
     }

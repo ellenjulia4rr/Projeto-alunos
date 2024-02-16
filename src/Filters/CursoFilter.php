@@ -2,12 +2,15 @@
 
 namespace App\Filters;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 class CursoFilter
 {
     private ?int $code = null;
     private ?int $workload = null;
     private ?string $name = null;
     private ?string $modality = null;
+    private ?ArrayCollection $alunos = null;
 
     public function getCode(): ?int
     {
@@ -50,6 +53,17 @@ class CursoFilter
     public function setModality(?string $modality): CursoFilter
     {
         $this->modality = $modality;
+        return $this;
+    }
+
+    public function getAlunos(): ?ArrayCollection
+    {
+        return $this->alunos;
+    }
+
+    public function setAlunos(?ArrayCollection $alunos): CursoFilter
+    {
+        $this->alunos = $alunos;
         return $this;
     }
 
