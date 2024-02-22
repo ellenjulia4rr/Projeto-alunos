@@ -33,6 +33,15 @@ class AlunoRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function countTotalAlunos(): int
+    {
+        return $this->createQueryBuilder('alunos')
+            ->select('COUNT(alunos.id)')
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
     private function getQueryBuilderByFilter(AlunoFilter $filter): QueryBuilder
     {
         $qb = $this->createQueryBuilder('alunos');

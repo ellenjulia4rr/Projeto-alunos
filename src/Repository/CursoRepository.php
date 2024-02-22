@@ -28,6 +28,15 @@ class CursoRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function countTotalCursos(): int
+    {
+        return $this->createQueryBuilder('cursos')
+            ->select('COUNT(cursos.id)')
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
     public function getCountCursosByFilter(CursoFilter $filter) :array
     {
         $qb = $this->getQueryBuilderByFilter($filter);
@@ -35,6 +44,18 @@ class CursoRepository extends ServiceEntityRepository
             ->select('count(distinct cursos.id) as qtde')
         ;
         return $qb->getQuery()->getResult();
+    }
+
+    public function findCursosMaisRealizados()
+    {
+        return $this->createQueryBuilder('cursos')
+            ->select('cursos, COUNT(alunos.id) as alunosCount')
+            ->leftJoin('cursos.alunos', 'alunos')
+            ->groupBy('cursos.id')
+            ->having('alunosCount >= 2')
+            ->orderBy('alunosCount', 'DESC')
+            ->setMaxResults(15)
+            ->getQuery()->getResult();
     }
 
     private function getQueryBuilderByFilter(CursoFilter $filter): QueryBuilder
